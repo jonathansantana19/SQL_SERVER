@@ -1,0 +1,54 @@
+COMANDO CONSULTA PLANILHA E INSERT NA TABLE
+
+**PROCEDIMENTO ****
+
+--------------------------------------------------------------------------
+INSTALAÇÃO E CONFIGURAÇÃO
+
+1 - Instância SQL SERVER instalada na máquina.
+2 - AccessDatabaseEngine_X64 - 64 bits ou AccessDatabaseEngine_X86 - 32 bits
+3 - HKEY_LOCAL_MACHINE -> SOFTWARE -> MICROSOFT -> MICROSOFT SQL SERVER -> MSSQL13.SQLEXPRESS -> PROVIDERS -> MICROSOFT.ACE.OLEDB.12.0 ->
+BOTAO DIREITO -> NEW -> VALORQWORD(VERSAÕ)
+
+NOME : DisallowAdhocAccess , BINARIO VALOR 0
+
+
+
+VAI NO BANCO EXECUTAR SEGUINTE COMANDO
+
+sp_configure 'show advanced options', 1;
+GO
+RECONFIGURE;
+GO
+sp_configure 'Ad Hoc Distributed Queries', 1;
+GO
+RECONFIGURE;
+GO
+EXEC master.dbo.sp_MSset_oledb_prop N'Microsoft.ACE.OLEDB.12.0', N'AllowInProcess', 1
+GO
+EXEC master.dbo.sp_MSset_oledb_prop N'Microsoft.ACE.OLEDB.12.0', N'DynamicParameters', 1
+GO
+
+
+-------------------------------------------------------------------------------------------
+
+QUERY
+
+INSERT INTO [dbo].[TABLE] 
+           ([customerid]
+           ,[VALOR_DIVIDA_C_DESCONTO]
+           ,[QTDE_PARCELA]
+           ,[RESPBL_NAME]
+           ,[PASSO]
+           ,[VENCIMENTO]
+           ,[VALOR_PARC]
+           ,[PROMESSA]
+           ,[Oferta]
+           ,[VALOR_EM_ATRASO]
+           ,[PASSO_ATUAL]
+           ,[Sit_PayTv]
+           ,[Sit_bl])
+		   SELECT  *
+   FROM   OPENROWSET('Microsoft.ACE.OLEDB.12.0',  
+          'Excel 12.0 Xml;IMEX=1;Database=C:\Users\santana1.jonathan\Downloads\NOME_ARQUIVO.xls',  
+          'SELECT * FROM [NOMEABA$]') ;
